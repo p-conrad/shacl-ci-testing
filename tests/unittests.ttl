@@ -1,0 +1,92 @@
+# Unit Tests (literally) for the SWEET Ontology of Scientific Units.
+
+@prefix ex: <http://example.org/ns#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix units: <http://sweetontology.net/reprSciUnits/> .
+@prefix screla: <http://sweetontology.net/relaSci/> .
+@prefix mrela: <http://sweetontology.net/relaMath/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix units: <http://sweetontology.net/reprSciUnits/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+# Each prefix should have at least one symbol and exactly one numeric value.
+ex:PrefixShape
+    a sh:NodeShape ;
+    sh:targetClass units:Prefix ;
+    sh:property [
+        sh:path screla:hasSymbol ;
+        sh:minCount 1 ;
+    ] ;
+    sh:property [
+        sh:path screla:hasNumericValue ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:double ;
+    ] .
+
+# Each unit derived by scaling should have either one base unit and one scaling number,
+# or have an equivalent unit specified.
+# Ideally, we would want to verify that equivalent unit to have a unit and scaling number,
+# which is left out for our example.
+ex:ScaledUnitShape
+    a sh:NodeShape ;
+    sh:targetClass units:UnitDerivedByScaling ;
+    sh:or (
+        [
+            sh:property [
+                sh:path screla:hasBaseUnit ;
+                sh:minCount 1 ;
+                sh:maxCount 1 ;
+                sh:node units:Unit ;
+            ] ;
+            sh:property [
+                sh:path mrela:hasScalingNumber ;
+                sh:minCount 1 ;
+                sh:maxCount 1 ;
+                sh:datatype xsd:double ;
+            ]
+        ]
+        [
+            sh:property [
+                sh:path owl:sameAs ;
+                sh:minCount 1 ;
+            ]
+        ]
+    ) .
+
+# The same for units derived by raising them to a power.
+ex:PowerUnitShape
+    a sh:NodeShape ;
+    sh:targetClass units:UnitDerivedByRaisingToPower ;
+    sh:or (
+        [
+            sh:property [
+                sh:path screla:hasBaseUnit ;
+                sh:minCount 1 ;
+                sh:maxCount 1 ;
+                sh:node units:Unit ;
+            ] ;
+            sh:property [
+                sh:path mrela:toThePower ;
+                sh:minCount 1 ;
+                sh:maxCount 1 ;
+                sh:datatype xsd:double ;
+            ]
+        ]
+        [
+            sh:property [
+                sh:path owl:sameAs ;
+                sh:minCount 1 ;
+            ]
+        ]
+    ) .
+
+# Each compound unit should have at least two operands.
+ex:ProductUnitShape
+    a sh:NodeShape ;
+    sh:targetClass units:UnitDefinedByProduct ;
+    sh:Property [
+        sh:path: mrela:hasOperand ;
+        sh:minCount 2 ;
+        sh:node units:Unit ;
+    ] .
