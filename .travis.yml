@@ -1,0 +1,32 @@
+language: generic
+
+env:
+  global:
+    - UNCLUTTER=true
+    - SHAPES_DIR="tests"
+    - DATA_FILE="sweet/src/reprSciUnits.ttl"
+
+before_script:
+  - if [[ $UNCLUTTER = true ]]; then sudo apt-get install -y pcregrep; fi;
+  - pushd /tmp
+  - git clone https://github.com/TopQuadrant/shacl.git
+  - cd shacl
+  - mvn package -Dmaven.test.skip=true
+  - popd
+  - unzip /tmp/shacl/target/shacl-*-bin.zip
+  - DIRNAME=$(find . -type d -name "shacl-*" -printf "%f\n")
+  - chmod -R +x $PWD/$DIRNAME/bin/
+  - export PATH=$PATH:$PWD/$DIRNAME/bin
+  - sed -i "1s/^/@prefix sh:\ <http:\/\/www.w3.org\/ns\/shacl#> .\n/" $DATA_FILE
+
+script: >
+  for file in $SHAPES_DIR/*;
+  do
+  shaclvalidate.sh -shapesfile $file -datafile $DATA_FILE >/tmp/report;
+  retval=$?;
+  if [[ $UNCLUTTER = true ]];
+  then pcregrep -M "^\[ a(\n|.)*^\] \." /tmp/report;
+  else cat /tmp/report;
+  fi;
+  if [[ $retval -ne 0 ]]; then return $retval; fi;
+  done
