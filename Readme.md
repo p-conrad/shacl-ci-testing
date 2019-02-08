@@ -31,6 +31,7 @@ Setting up the CI for your own project is simple and can be done following these
    regular expression search on the report, trying to filter out only the relevant part. This feature has however not
    been extensively tested and there might be cases where it behaves erratically. If it seems to be causing problems,
    please try turning it off and consider opening an issue.
+
 That's it! You should be ready to use Travis CI with your ontology project now.
 
 ## Using a Binary SHACL Distribution
