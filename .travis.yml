@@ -5,15 +5,13 @@ env:
     - UNCLUTTER=true
     - SHAPES_DIR="tests"
     - DATA_FILE="sweet/src/reprSciUnits.ttl"
+    - SHACL_VERSION="1.2.0"
+    - SHACL_URL="http://central.maven.org/maven2/org/topbraid/shacl/${SHACL_VERSION}/shacl-${SHACL_VERSION}-bin.zip"
 
 before_script:
   - if [[ $UNCLUTTER = true ]]; then sudo apt-get install -y pcregrep; fi;
-  - pushd /tmp
-  - git clone https://github.com/TopQuadrant/shacl.git
-  - cd shacl
-  - mvn package -Dmaven.test.skip=true
-  - popd
-  - unzip /tmp/shacl/target/shacl-*-bin.zip
+  - wget $SHACL_URL -O /tmp/shacl.zip
+  - unzip /tmp/shacl.zip
   - DIRNAME=$(find . -type d -name "shacl-*" -printf "%f\n")
   - chmod -R +x $PWD/$DIRNAME/bin/
   - export PATH=$PATH:$PWD/$DIRNAME/bin
