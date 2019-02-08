@@ -609,13 +609,13 @@ units:metre rdf:type owl:NamedIndividual ,
 ###  http://sweetontology.net/reprSciUnits/micro
 units:micro rdf:type owl:NamedIndividual ,
                      units:Prefix ;
-            screla:hasNumericValue "1.0E-6"^^xsd:double .
+            screla:hasNumericValue "1.0E-6"^^xsd:double ;
+			screla:hasSymbol "u" .
 
 
 ###  http://sweetontology.net/reprSciUnits/micrometer
 units:micrometer rdf:type owl:NamedIndividual ,
                           units:UnitDerivedByScaling ;
-                 owl:sameAs units:micron ;
                  screla:hasBaseUnit units:meter ;
                  screla:hasPrefix units:micro ;
                  mrela:hasScalingNumber "1.0E-6"^^xsd:double .
@@ -623,7 +623,8 @@ units:micrometer rdf:type owl:NamedIndividual ,
 
 ###  http://sweetontology.net/reprSciUnits/micron
 units:micron rdf:type owl:NamedIndividual ,
-                      units:UnitDerivedByScaling .
+                      units:UnitDerivedByScaling ;
+				 owl:sameAs units:micrometer .
 
 
 ###  http://sweetontology.net/reprSciUnits/millenium
